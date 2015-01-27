@@ -242,6 +242,11 @@ class ConfigFileTest(CoverageTest):
 
         other = other, /home/ned/other, c:\\Ned\\etc
 
+        [{section}combine]
+        data_dirs =
+            /this/directory/
+            /other/directory/
+
         [{section}plugins.a_plugin]
         hello = world
         ; comments still work.
@@ -307,6 +312,10 @@ class ConfigFileTest(CoverageTest):
             'names': 'Jane/John/Jenny',
             })
         self.assertEqual(cov.config.get_plugin_options("plugins.another"), {})
+
+        self.assertEqual(cov.config.data_dirs,
+            ["/this/directory/", "/other/directory/"]
+            )
 
     def test_config_file_settings(self):
         self.make_file(".coveragerc", self.LOTSA_SETTINGS.format(section=""))

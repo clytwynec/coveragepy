@@ -692,7 +692,7 @@ class Coverage(object):
                 result = paths[0]
                 for pattern in paths[1:]:
                     aliases.add(pattern, result)
-        self.data.combine_parallel_data(aliases=aliases)
+        self.data.combine_parallel_data(aliases=aliases, data_dirs=self.config.data_dirs)
 
     def _harvest_data(self):
         """Get the collected data and reset the collector.

@@ -188,10 +188,13 @@ class CoverageConfig(object):
         # Defaults for [paths]
         self.paths = {}
 
+        # Defaults for [combine]
+        self.data_dirs = None
+
         # Options for plugins
         self.plugin_options = {}
 
-    MUST_BE_LIST = ["omit", "include", "debug", "plugins"]
+    MUST_BE_LIST = ["omit", "include", "debug", "plugins", "data_dirs"]
 
     def from_args(self, **kwargs):
         """Read config values from `kwargs`."""
@@ -285,6 +288,9 @@ class CoverageConfig(object):
         # [xml]
         ('xml_output', 'xml:output'),
         ('xml_package_depth', 'xml:package_depth', 'int'),
+
+        # [combine]
+        ('data_dirs', 'combine:data_dirs', 'regexlist')
         ]
 
     def _set_attr_from_config_option(self, cp, attr, where, type_=''):

@@ -1,6 +1,7 @@
 """Coverage data for Coverage."""
 
 import os
+import glob
 
 from coverage.backward import iitems, pickle
 from coverage.files import PathAliases
@@ -190,7 +191,7 @@ class CoverageData(object):
             pass
         return lines, arcs, plugins
 
-    def combine_parallel_data(self, aliases=None):
+    def combine_parallel_data(self, aliases=None, data_dirs=None):
         """Combine a number of data files together.
 
         Treat `self.filename` as a file prefix, and combine the data from all
@@ -202,20 +203,26 @@ class CoverageData(object):
         """
         aliases = aliases or PathAliases()
         data_dir, local = os.path.split(self.filename)
-        localdot = local + '.'
-        for f in os.listdir(data_dir or '.'):
-            if f.startswith(localdot):
-                full_path = os.path.join(data_dir, f)
-                new_lines, new_arcs, new_plugins = self._read_file(full_path)
-                for filename, file_data in iitems(new_lines):
-                    filename = aliases.map(filename)
-                    self.lines.setdefault(filename, {}).update(file_data)
-                for filename, file_data in iitems(new_arcs):
-                    filename = aliases.map(filename)
-                    self.arcs.setdefault(filename, {}).update(file_data)
-                self.plugins.update(new_plugins)
-                if f != local:
-                    os.remove(full_path)
+        localdot = local + '.*'
+
+        data_dirs = data_dirs or [data_dir] or ['.']
+        files_to_combine = []
+        for d in data_dirs:
+            pattern = os.path.join(d, localdot)
+            files_to_combine.extend(glob.glob(pattern))
+
+        for f in files_to_combine:
+            new_lines, new_arcs, new_plugins = self._read_file(f)
+            for filename, file_data in iitems(new_lines):
+                filename = aliases.map(filename)
+                self.lines.setdefault(filename, {}).update(file_data)
+            for filename, file_data in iitems(new_arcs):
+                filename = aliases.map(filename)
+                self.arcs.setdefault(filename, {}).update(file_data)
+            self.plugins.update(new_plugins)
+
+            if os.path.basename(f) != local:
+                os.remove(f)
 
     def add_line_data(self, line_data):
         """Add executed line data.

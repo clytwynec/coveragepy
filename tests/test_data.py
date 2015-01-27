@@ -1,4 +1,5 @@
 """Tests for coverage.data"""
+import os
 
 from coverage.backward import pickle
 from coverage.data import CoverageData
@@ -154,3 +155,28 @@ class DataTest(CoverageTest):
             covdata3, {'./a.py': 4, './sub/b.py': 2}, fullpath=True
             )
         self.assert_measured_files(covdata3, ['./a.py', './sub/b.py'])
+
+
+    def test_combining_from_different_directories(self):
+        try:
+            covdata1 = CoverageData()
+            covdata1.add_line_data(DATA_1)
+            os.makedirs('cov1')
+            covdata1.write_file('cov1/.coverage.1')
+
+            covdata2 = CoverageData()
+            covdata2.add_line_data(DATA_2)
+            os.makedirs('cov2')
+            covdata2.write_file('cov2/.coverage.2')
+
+            covdata3 = CoverageData()
+            covdata3.combine_parallel_data(data_dirs=[
+                './cov1/',
+                './cov2/',
+                ])
+
+            self.assert_summary(covdata3, SUMMARY_1_2)
+            self.assert_measured_files(covdata3, MEASURED_FILES_1_2)
+        finally:
+            os.rmdir('cov1')
+            os.rmdir('cov2')

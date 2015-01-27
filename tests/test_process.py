@@ -142,6 +142,10 @@ class ProcessTest(CoverageTest):
         self.make_file(".coveragerc", """\
             [run]
             parallel = true
+
+            [combine]
+            data_dirs =
+                .
             """)
 
         out = self.run_command("coverage run b_or_c.py b")

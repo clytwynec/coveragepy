@@ -1,5 +1,4 @@
 """Tests for coverage.data"""
-import os
 import shutil
 
 from coverage.backward import pickle

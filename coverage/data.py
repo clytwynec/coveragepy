@@ -208,7 +208,7 @@ class CoverageData(object):
         data_dirs = data_dirs or [data_dir] or ['.']
         files_to_combine = []
         for d in data_dirs:
-            pattern = os.path.join(d, localdot)
+            pattern = os.path.join(os.path.abspath(d), localdot)
             files_to_combine.extend(glob.glob(pattern))
 
         for f in files_to_combine:

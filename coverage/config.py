@@ -290,7 +290,7 @@ class CoverageConfig(object):
         ('xml_package_depth', 'xml:package_depth', 'int'),
 
         # [combine]
-        ('data_dirs', 'combine:data_dirs', 'regexlist')
+        ('data_dirs', 'combine:data_dirs', 'list'),
         ]
 
     def _set_attr_from_config_option(self, cp, attr, where, type_=''):

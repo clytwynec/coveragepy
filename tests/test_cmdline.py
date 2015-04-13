@@ -21,7 +21,7 @@ class BaseCmdLineTest(CoverageTest):
     defaults.coverage(
         cover_pylib=None, data_suffix=None, timid=None, branch=None,
         config_file=True, source=None, include=None, omit=None, debug=None,
-        concurrency=None,
+        concurrency=None, data_dirs=None,
     )
     defaults.annotate(
         directory=None, ignore_errors=None, include=None, omit=None, morfs=[],

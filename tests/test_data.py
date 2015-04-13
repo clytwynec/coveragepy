@@ -1,5 +1,6 @@
 """Tests for coverage.data"""
 import os
+import shutil
 
 from coverage.backward import pickle
 from coverage.data import CoverageData
@@ -178,5 +179,7 @@ class DataTest(CoverageTest):
             self.assert_summary(covdata3, SUMMARY_1_2)
             self.assert_measured_files(covdata3, MEASURED_FILES_1_2)
         finally:
-            os.rmdir('cov1')
-            os.rmdir('cov2')
+            # Use shutil here because if something goes wrong above, these
+            # dirs may not be empty and os.rmdir would fail to remove them.
+            shutil.rmtree('cov1')
+            shutil.rmtree('cov2')

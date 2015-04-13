@@ -88,6 +88,11 @@ class Opts(object):
                 ".coverage data file name to simplify collecting data from "
                 "many processes."
         )
+    data_dirs = optparse.make_option(
+        '', '--data-dirs', action='store',
+        help="A list of directories from which to combine coverage files that"
+                "have been created using parallel_mode."
+        )
     module = optparse.make_option(
         '-m', '--module', action='store_true',
         help="<pyfile> is an importable Python module, not a script path, "
@@ -140,6 +145,7 @@ class CoverageOptionParser(optparse.OptionParser, object):
             include=None,
             omit=None,
             parallel_mode=None,
+            data_dirs=None,
             module=None,
             pylib=None,
             rcfile=True,
@@ -246,7 +252,7 @@ CMDS = {
             "missed with !."
         ),
 
-    'combine': CmdOptionParser("combine", GLOBAL_ARGS,
+    'combine': CmdOptionParser("combine", [Opts.data_dirs] + GLOBAL_ARGS,
         usage = " ",
         description = "Combine data from multiple coverage files collected "
             "with 'run -p'.  The combined results are written to a single "
@@ -397,6 +403,7 @@ class CoverageScript(object):
         omit = unshell_list(options.omit)
         include = unshell_list(options.include)
         debug = unshell_list(options.debug)
+        data_dirs = unshell_list(options.data_dirs)
 
         # Do something.
         self.coverage = self.covpkg.coverage(
@@ -410,6 +417,7 @@ class CoverageScript(object):
             include = include,
             debug = debug,
             concurrency = options.concurrency,
+            data_dirs = data_dirs,
             )
 
         if options.action == "debug":

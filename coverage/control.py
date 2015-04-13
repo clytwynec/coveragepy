@@ -54,7 +54,7 @@ class Coverage(object):
         self, data_file=None, data_suffix=None, cover_pylib=None,
         auto_data=False, timid=None, branch=None, config_file=True,
         source=None, omit=None, include=None, debug=None,
-        concurrency=None,
+        concurrency=None, data_dirs=None,
     ):
         """
         `data_file` is the base name of the data file to use, defaulting to
@@ -98,6 +98,9 @@ class Coverage(object):
         results.  Valid strings are "greenlet", "eventlet", "gevent", or
         "thread" (the default).
 
+        `data_dirs` is a list of directories from which to combine data files
+        that have been created using parallel mode.
+
         """
         # Build our configuration from a number of sources:
         # 1: defaults:
@@ -129,7 +132,7 @@ class Coverage(object):
             data_file=data_file, cover_pylib=cover_pylib, timid=timid,
             branch=branch, parallel=bool_or_none(data_suffix),
             source=source, omit=omit, include=include, debug=debug,
-            concurrency=concurrency,
+            concurrency=concurrency, data_dirs=data_dirs,
             )
 
         self._debug_file = None
@@ -692,6 +695,7 @@ class Coverage(object):
                 result = paths[0]
                 for pattern in paths[1:]:
                     aliases.add(pattern, result)
+
         self.data.combine_parallel_data(aliases=aliases, data_dirs=self.config.data_dirs)
 
     def _harvest_data(self):
